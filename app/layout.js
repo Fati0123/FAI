@@ -3,6 +3,7 @@ import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import NavBar from '../components/NavBar';
+import SocialIcons from '../components/SocialIcons';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -109,6 +110,7 @@ export default function RootLayout({ children }) {
             </main>
             <footer className="mt-auto py-8 text-center text-sm text-foreground/70">
               <div className="container">
+                <SocialIcons />
                 <p>© {new Date().getFullYear()} Fati. All rights reserved.</p>
               </div>
             </footer>
