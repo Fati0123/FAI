@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useCallback, Suspense } from 'react';
+import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Image from 'next/image';
 import { useForm } from '@formspree/react';
 import { portfolioEvents } from '@/lib/analytics';
-import { loadSlim } from "tsparticles-slim";
 import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
+import { useTheme } from 'next-themes';
 import { getParticlesConfig } from '@/lib/particlesConfig';
 
 function HomeContent() {
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme } = useTheme();
   const [state, handleSubmit] = useForm("xkgrakjg");
 
   const particlesInit = useCallback(async engine => {
@@ -23,44 +24,18 @@ function HomeContent() {
     portfolioEvents.navigation('home');
   }, []);
 
-  // Theme tracking
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const initialTheme = savedTheme === 'dark';
-    setDarkMode(initialTheme);
-    portfolioEvents.themeSwitch(initialTheme ? 'dark' : 'light');
-  }, []);
-
   // Section visibility tracking
-  const [heroRef, heroInView] = useInView({ threshold: 0.1 });
-  const [projectsRef, projectsInView] = useInView({ threshold: 0.1 });
-  const [aboutRef, aboutInView] = useInView({ threshold: 0.1 });
-  const [contactRef, contactInView] = useInView({ threshold: 0.1 });
+  const [heroRef, heroInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [projectsRef, projectsInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [aboutRef, aboutInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [contactRef, contactInView] = useInView({ threshold: 0.1, triggerOnce: true });
 
-  useEffect(() => {
-    if (heroInView) portfolioEvents.sectionView('hero');
-  }, [heroInView]);
-
-  useEffect(() => {
-    if (projectsInView) portfolioEvents.sectionView('projects');
-  }, [projectsInView]);
-
-  useEffect(() => {
-    if (aboutInView) portfolioEvents.sectionView('about');
-  }, [aboutInView]);
-
-  useEffect(() => {
-    if (contactInView) portfolioEvents.sectionView('contact');
-  }, [contactInView]);
-
-  // Event handlers
-  const toggleTheme = () => {
-    const newTheme = !darkMode;
-    setDarkMode(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-    portfolioEvents.themeSwitch(newTheme ? 'dark' : 'light');
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
   };
 
+  // Event handlers
   const handleResumeClick = () => {
     portfolioEvents.resumeDownload();
   };
@@ -84,83 +59,73 @@ function HomeContent() {
     portfolioEvents.formStart();
   };
 
-  const fadeInUp = {
-    initial: { y: 20, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-    transition: { duration: 0.5 }
-  };
-
   return (
-    <main className="min-h-screen relative">
-      <div className={`absolute inset-0 transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-800'}`}>
-        <Particles
-          id="tsparticles"
-          init={particlesInit}
-          options={getParticlesConfig(darkMode)}
-          className="absolute inset-0 w-full h-full"
-        />
-      </div>
-      {/* Accessible Navigation */}
-      <header className={`fixed w-full z-10 ${darkMode ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm shadow-lg transition-colors duration-300`} role="banner">
-        <div className="max-w-7xl mx-auto px-4">
-          <nav className="flex items-center justify-between h-16" role="navigation" aria-label="Main navigation">
-            <div className="flex items-center space-x-8 text-lg font-medium">
-              <a href="#" className="hover:text-blue-500 transition-colors duration-200" aria-label="Home">Home</a>
-              <a href="#about" className="hover:text-blue-500 transition-colors duration-200" aria-label="About me">About</a>
-              <a href="#projects" className="hover:text-blue-500 transition-colors duration-200" aria-label="My projects">Projects</a>
-              <a href="#blog" className="hover:text-blue-500 transition-colors duration-200" aria-label="Blog">Blog</a>
-              <a href="#contact" className="hover:text-blue-500 transition-colors duration-200" aria-label="Contact me">Contact</a>
-            </div>
-            <button
-              onClick={toggleTheme}
-              aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
-              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-            >
-              {darkMode ? '🌙' : '☀️'}
-            </button>
-          </nav>
-        </div>
-      </header>
+    <>
+      <Particles
+        id="particles-background"
+        init={particlesInit}
+        options={getParticlesConfig(theme === 'dark')}
+        className="fixed inset-0 -z-10"
+      />
 
       {/* Hero Section with Animation */}
       <motion.section 
+        id="home"
         ref={heroRef}
-        initial="initial"
-        animate={heroInView ? "animate" : "initial"}
-        variants={fadeInUp}
-        className="pt-24 flex flex-col items-center justify-center text-center p-8 relative min-h-screen"
+        initial="hidden"
+        animate={heroInView ? "visible" : "hidden"}
+        transition={{ duration: 0.6 }}
+        className="min-h-screen flex items-center justify-center"
       >
-        <div className="max-w-4xl mx-auto relative z-10">
-          <motion.h1 
-            className="text-5xl font-bold mb-6 font-poppins"
-            variants={fadeInUp}
+        <motion.div
+          variants={sectionVariants}
+          initial="hidden"
+          animate={heroInView ? "visible" : "hidden"}
+          transition={{ duration: 0.6 }}
+          className="container px-4 py-32 text-center"
+        >
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl md:text-6xl font-bold mb-6"
           >
-            Fati&apos;s Developer Portfolio
+            Hi, I'm Fati
           </motion.h1>
-          <motion.p 
-            className="text-xl font-inter max-w-2xl mx-auto leading-relaxed"
-            variants={fadeInUp}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-xl md:text-2xl text-foreground/70 mb-8"
           >
-            Welcome to my personal website! I&apos;m learning software engineering and building cool things along the way.
+            A Software Engineer passionate about building modern web applications
           </motion.p>
-          <motion.div className="mt-8" variants={fadeInUp}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
             <a
-              href="/resume.pdf"
-              onClick={handleResumeClick}
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              aria-label="Download Resume"
+              href="#contact"
+              className="bg-primary text-white px-8 py-3 rounded-full font-medium hover:bg-primary/90 transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                document.querySelector('#contact').scrollIntoView({
+                  behavior: 'smooth'
+                });
+              }}
             >
-              Download Resume
+              Get in touch
             </a>
           </motion.div>
-        </div>
+        </motion.div>
       </motion.section>
 
       {/* Projects Section */}
       <section 
         ref={projectsRef}
         id="projects" 
-        className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}
+        className={`py-20 px-6 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}
       >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Projects</h2>
@@ -168,7 +133,7 @@ function HomeContent() {
             <motion.div 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`${darkMode ? 'bg-gray-700' : 'bg-white'} p-8 rounded-xl shadow-lg`}
+              className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-white'} p-8 rounded-xl shadow-lg`}
             >
               <h3 className="text-2xl font-bold mb-4">To-Do List App</h3>
               <p className="text-lg mb-4">A simple task manager built with React and Tailwind CSS. Great for staying organized!</p>
@@ -186,7 +151,7 @@ function HomeContent() {
             <motion.div 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`${darkMode ? 'bg-gray-700' : 'bg-white'} p-8 rounded-xl shadow-lg`}
+              className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-white'} p-8 rounded-xl shadow-lg`}
             >
               <h3 className="text-2xl font-bold mb-4">Weather App</h3>
               <p className="text-lg mb-4">An app that fetches and displays weather data using a public API. Shows current weather by city.</p>
@@ -205,7 +170,7 @@ function HomeContent() {
       </section>
 
       {/* Blog Section */}
-      <section id="blog" className={`py-20 px-6 ${darkMode ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+      <section id="blog" className={`py-20 px-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Latest Articles</h2>
           <div className="space-y-8">
@@ -234,7 +199,7 @@ function HomeContent() {
       <section 
         ref={aboutRef}
         id="about" 
-        className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}
+        className={`py-20 px-6 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}
       >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8 font-poppins">About Me</h2>
@@ -291,7 +256,7 @@ function HomeContent() {
       <section 
         ref={contactRef}
         id="contact" 
-        className={`py-20 px-6 ${darkMode ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}
+        className={`py-20 px-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}
       >
         <div className="max-w-2xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Contact Me</h2>
@@ -308,7 +273,7 @@ function HomeContent() {
                 name="name"
                 required
                 className={`w-full px-4 py-3 rounded-lg ${
-                  darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+                  theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
                 } border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200`}
                 aria-label="Your name"
               />
@@ -321,7 +286,7 @@ function HomeContent() {
                 name="email"
                 required
                 className={`w-full px-4 py-3 rounded-lg ${
-                  darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+                  theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
                 } border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200`}
                 aria-label="Your email"
               />
@@ -334,7 +299,7 @@ function HomeContent() {
                 required
                 rows="5"
                 className={`w-full px-4 py-3 rounded-lg ${
-                  darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+                  theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
                 } border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200`}
                 aria-label="Your message"
               ></textarea>
@@ -361,14 +326,14 @@ function HomeContent() {
       </section>
 
       {/* Footer */}
-      <footer className={`py-8 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}>
+      <footer className={`py-8 px-6 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}>
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             © {new Date().getFullYear()} Fati&apos;s Portfolio. Built with Next.js and Tailwind CSS.
           </p>
         </div>
       </footer>
-    </main>
+    </>
   );
 }
 

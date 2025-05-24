@@ -19,9 +19,22 @@ const poppins = Poppins({
 
 export const metadata = {
   metadataBase: new URL('https://your-portfolio-url.com'),
-  title: "Fati's Portfolio | Software Engineer",
+  title: {
+    default: "Fati's Portfolio | Software Engineer",
+    template: "%s | Fati's Portfolio"
+  },
   description: "Welcome to my portfolio! I'm Fati, a software engineer passionate about building modern web applications and learning new technologies.",
-  keywords: "software engineer, web developer, React, Next.js, portfolio",
+  keywords: [
+    "software engineer",
+    "web developer",
+    "React",
+    "Next.js",
+    "portfolio",
+    "frontend developer",
+    "full-stack developer"
+  ],
+  authors: [{ name: "Fati" }],
+  creator: "Fati",
   openGraph: {
     title: "Fati's Portfolio | Software Engineer",
     description: "Welcome to my portfolio! I'm Fati, a software engineer passionate about building modern web applications.",
@@ -32,6 +45,7 @@ export const metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
+        alt: "Fati's Portfolio"
       },
     ],
     locale: 'en_US',
@@ -42,6 +56,7 @@ export const metadata = {
     title: "Fati's Portfolio | Software Engineer",
     description: "Welcome to my portfolio! I'm Fati, a software engineer passionate about building modern web applications.",
     images: ['/og-image.jpg'],
+    creator: '@YourTwitterHandle'
   },
   robots: {
     index: true,
@@ -55,6 +70,13 @@ export const metadata = {
     },
   },
   manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  verification: {
+    google: 'your-google-verification-code', // Add your Google verification code
+  },
 };
 
 export default function RootLayout({ children }) {
