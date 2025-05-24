@@ -59,7 +59,8 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body>
+      <body className="relative">
+        <div className="fixed inset-0 -z-10" id="particles-background" />
         {children}
       </body>
     </html>

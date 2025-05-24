@@ -13,12 +13,14 @@ html {
 
 body {
   font-family: var(--font-inter);
-  background-color: white;
+  background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%);
+  min-height: 100vh;
+  position: relative;
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: rgb(17, 24, 39); /* tailwind gray-900 */
+    background: linear-gradient(135deg, #0c4a6e 0%, #4338ca 50%, #6b21a8 100%);
   }
 }
 
