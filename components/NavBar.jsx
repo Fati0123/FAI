@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { Sun, Moon, Menu, X } from 'lucide-react';
 import Container from './Container';
+import Link from 'next/link';
 
 const NavBar = () => {
   const [mounted, setMounted] = useState(false);
@@ -118,26 +119,28 @@ const NavBar = () => {
           transition={{ duration: 0.2 }}
         >
           <div className="py-4 space-y-4">
-            {navLinks.map(({ href, label }) => (
-              <a
-                key={href}
-                href={href}
-                className={`block px-4 py-2 text-sm font-medium ${
-                  activeSection === href.slice(1)
-                    ? 'text-blue-600 dark:text-blue-400'
-                    : 'text-gray-600 dark:text-gray-300'
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.querySelector(href).scrollIntoView({
-                    behavior: 'smooth',
-                  });
-                  setIsOpen(false);
-                }}
-              >
-                {label}
-              </a>
-            ))}
+            <nav className="flex flex-col sm:flex-row gap-4 items-center">
+              {navLinks.map(({ href, label }) => (
+                <Link key={href} href={href} passHref>
+                  <a
+                    className={`block px-4 py-2 text-sm font-medium ${
+                      activeSection === href.slice(1)
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-gray-600 dark:text-gray-300'
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth',
+                      });
+                      setIsOpen(false);
+                    }}
+                  >
+                    {label}
+                  </a>
+                </Link>
+              ))}
+            </nav>
 
             {mounted && (
               <button

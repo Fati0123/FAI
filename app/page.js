@@ -10,6 +10,7 @@ import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import { useTheme } from 'next-themes';
 import { getParticlesConfig } from '@/lib/particlesConfig';
+import Head from 'next/head';
 
 function HomeContent() {
   const { theme } = useTheme();
@@ -61,6 +62,11 @@ function HomeContent() {
 
   return (
     <>
+      <Head>
+        <title>Fati | Developer Portfolio</title>
+        <meta name="description" content="Software engineer building web applications" />
+        <meta property="og:image" content="/og-image.png" />
+      </Head>
       <Particles
         id="particles-background"
         init={particlesInit}

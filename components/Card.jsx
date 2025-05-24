@@ -14,7 +14,7 @@ const Card = ({
 }) => {
   return (
     <motion.div
-      className={`bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 ${className}`}
+      className={`bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform hover:-translate-y-1 ${className}`}
       whileHover={{ y: -4 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

@@ -34,7 +34,7 @@ function DashboardContent() {
               <span className="text-gray-700">Subscribe to newsletter</span>
             </label>
           </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors mt-4">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
             Save Changes
           </button>
         </div>

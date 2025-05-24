@@ -14,17 +14,10 @@ module.exports = {
         poppins: ['var(--font-poppins)'],
       },
       colors: {
-        border: 'hsl(var(--border))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
+        primary: '#3B82F6', // Blue-500
+        secondary: '#10B981', // Emerald-500
+        accent: '#F59E0B', // Amber-500
+        neutral: '#374151', // Gray-700
       },
       animation: {
         'gradient-x': 'gradient-x 15s ease infinite',

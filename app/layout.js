@@ -102,15 +102,17 @@ export default function RootLayout({ children }) {
         <Providers>
           <div className="gradient-background" />
           <div className="fixed inset-0 -z-10" id="particles-background" />
-          <NavBar />
-          <main className="pt-16">
-            {children}
-          </main>
-          <footer className="mt-auto py-8 text-center text-sm text-foreground/70">
-            <div className="container">
-              <p>© {new Date().getFullYear()} Fati. All rights reserved.</p>
-            </div>
-          </footer>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">{/* Wrap content */}
+            <NavBar />
+            <main className="pt-16">
+              {children}
+            </main>
+            <footer className="mt-auto py-8 text-center text-sm text-foreground/70">
+              <div className="container">
+                <p>© {new Date().getFullYear()} Fati. All rights reserved.</p>
+              </div>
+            </footer>
+          </div>
         </Providers>
       </body>
     </html>
