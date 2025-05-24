@@ -3,19 +3,17 @@ export default function Home() {
     <main className="min-h-screen bg-white text-gray-800">
       <header className="bg-gray-100 p-4 shadow">
         <nav className="flex justify-center space-x-6 text-lg font-medium">
-          <a href="#" className="text-primary hover:underline">Home</a>
-          <a href="#about" className="text-primary hover:underline">About</a>
-          <a href="#projects" className="text-primary hover:underline">Projects</a>
-          <a href="#contact" className="text-primary hover:underline">Contact</a>
+          <a href="#" className="text-blue-600 hover:underline">Home</a>
+          <a href="#about" className="text-blue-600 hover:underline">About</a>
+          <a href="#projects" className="text-blue-600 hover:underline">Projects</a>
+          <a href="#contact" className="text-blue-600 hover:underline">Contact</a>
         </nav>
       </header>
 
       <section className="flex flex-col items-center justify-center text-center p-8">
-        <h1 className="font-playfair text-5xl text-blue-800 mb-6">
-          Welcome to Fati's Portfolio
-        </h1>
+        <h1 className="text-4xl font-bold mb-4">Fati&apos;s Developer Portfolio</h1>
         <p className="text-lg max-w-xl">
-          Welcome to my personal website! I'm learning software engineering and building cool things along the way.
+          Welcome to my personal website! I&apos;m learning software engineering and building cool things along the way.
         </p>
       </section>
 
@@ -34,10 +32,10 @@ export default function Home() {
       </section>
 
       <section id="about" className="bg-gray-50 py-12 px-6 text-center">
-        <h2 className="text-3xl font-semibold mb-4 text-yellow-500">About Me</h2>
+        <h2 className="text-3xl font-semibold mb-4">About Me</h2>
         <p className="max-w-2xl mx-auto text-lg">
-          Hi, I'm Fati! I'm learning software engineering step by step, and I love building simple and useful web apps.
-          I'm passionate about solving problems and growing my skills in coding and design.
+          Hi, I&apos;m Fati! I&apos;m learning software engineering step by step, and I love building simple and useful web apps.
+          I&apos;m passionate about solving problems and growing my skills in coding and design.
         </p>
       </section>
 
@@ -70,7 +68,7 @@ export default function Home() {
           ></textarea>
           <button
             type="submit"
-            className="bg-accent text-white py-2 px-6 rounded hover:bg-yellow-500 transition-all duration-300"
+            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
           >
             Send Message
           </button>
@@ -79,4 +77,3 @@ export default function Home() {
     </main>
   );
 }
-
