@@ -1,15 +1,4 @@
 import Script from 'next/script';
-import { Inter, Poppins } from 'next/font/google';
-import { Providers } from './providers';
-import { Providers as SearchParamsProviders } from './search-params-provider';
-import './globals.css';
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins',
-});
 
 export const metadata = {
   metadataBase: new URL('https://your-portfolio-url.com'),
@@ -70,10 +59,8 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body className={`${inter.variable} ${poppins.variable} font-inter antialiased`}>
-        <SearchParamsProviders>
-          <Providers>{children}</Providers>
-        </SearchParamsProviders>
+      <body>
+        {children}
       </body>
     </html>
   );
