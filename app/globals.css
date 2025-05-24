@@ -2,77 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-inter: 'Inter', sans-serif;
-  --font-poppins: 'Poppins', sans-serif;
-}
+@layer base {
+  :root {
+    --font-inter: 'Inter', sans-serif;
+    --font-poppins: 'Poppins', sans-serif;
+    
+    /* Custom color variables */
+    --primary: 224 64% 54%;
+    --secondary: 259 84% 61%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-inter);
-  background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%);
-  min-height: 100vh;
-  position: relative;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background: linear-gradient(135deg, #0c4a6e 0%, #4338ca 50%, #6b21a8 100%);
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    @apply antialiased;
+  }
+
+  body {
+    font-family: var(--font-inter);
+    @apply bg-background text-foreground min-h-screen relative;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-poppins);
+    @apply font-bold tracking-tight;
+  }
+
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
+  h2 { @apply text-3xl md:text-4xl lg:text-5xl; }
+  h3 { @apply text-2xl md:text-3xl lg:text-4xl; }
+  h4 { @apply text-xl md:text-2xl lg:text-3xl; }
+  h5 { @apply text-lg md:text-xl lg:text-2xl; }
+  h6 { @apply text-base md:text-lg lg:text-xl; }
+
+  p { @apply leading-7; }
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+/* Section styles */
+.section {
+  @apply py-16 md:py-24;
+  position: relative;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.1)
+  );
+  backdrop-filter: blur(10px);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+/* Navigation styles */
+.nav-link {
+  @apply relative px-3 py-2 text-foreground/70 transition-colors hover:text-foreground;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.nav-link.active {
+  @apply text-foreground;
 }
 
-/* Smooth transitions for dark mode */
-.transition-colors {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
+.nav-link.active::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full;
 }
 
-/* Focus styles */
-.focus-ring {
-  outline: none;
-  box-shadow: 0 0 0 2px #3b82f6;
-  border-color: #3b82f6;
+/* Card and container styles */
+.container {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
 }
 
-/* Button hover effects */
-.hover-scale {
-  transform: translateZ(0);
-  transition: transform 0.2s ease-in-out;
+.card {
+  @apply rounded-lg border bg-card p-6 shadow-sm transition-all duration-200
+         hover:shadow-lg hover:-translate-y-1;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(10px);
 }
 
-.hover-scale:hover {
-  transform: scale(1.05);
+/* Button styles */
+.button {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium
+         transition-colors focus-visible:outline-none focus-visible:ring-2
+         focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
 }
 
-/* Card hover effects */
-.card-hover {
-  transform: translateZ(0);
-  transition: all 0.3s ease-in-out;
+.button-primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90;
 }
 
-.card-hover:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  transform: translateY(-4px);
+/* Animation classes */
+.fade-in {
+  @apply animate-fadeIn;
+}
+
+.slide-up {
+  @apply animate-slideUp;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .animate-slideUp {
+    animation: slideUp 0.5s ease-out forwards;
+  }
 }

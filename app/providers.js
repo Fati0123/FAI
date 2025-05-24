@@ -1,5 +1,6 @@
 'use client';
 
+import { ThemeProvider } from 'next-themes';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { pageview } from '@/lib/analytics';
@@ -13,5 +14,9 @@ export function Providers({ children }) {
     pageview(url);
   }, [pathname, searchParams]);
 
-  return <>{children}</>;
+  return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      {children}
+    </ThemeProvider>
+  );
 }

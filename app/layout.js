@@ -1,4 +1,21 @@
 import Script from 'next/script';
+import { Inter, Poppins } from 'next/font/google';
+import './globals.css';
+import { Providers } from './providers';
+import NavBar from '../components/NavBar';
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap'
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap'
+});
 
 export const metadata = {
   metadataBase: new URL('https://your-portfolio-url.com'),
@@ -42,7 +59,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${inter.variable} ${poppins.variable}`}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -59,9 +76,19 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body className="relative">
-        <div className="fixed inset-0 -z-10" id="particles-background" />
-        {children}
+      <body className="min-h-screen bg-background font-inter relative">
+        <Providers>
+          <div className="fixed inset-0 -z-10" id="particles-background" />
+          <NavBar />
+          <main className="pt-16">
+            {children}
+          </main>
+          <footer className="mt-auto py-8 text-center text-sm text-foreground/70">
+            <div className="container">
+              <p>© {new Date().getFullYear()} Fati. All rights reserved.</p>
+            </div>
+          </footer>
+        </Providers>
       </body>
     </html>
   );
