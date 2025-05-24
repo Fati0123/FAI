@@ -1,79 +1,310 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import Image from 'next/image';
+import { useForm } from '@formspree/react';
+import { trackEvents } from '@/lib/analytics';
+
 export default function Home() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [state, handleSubmit] = useForm("xkgrakjg");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    setDarkMode(savedTheme === 'dark');
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !darkMode;
+    setDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    trackEvents.themeToggle(newTheme ? 'dark' : 'light');
+  };
+
+  const handleResumeClick = () => {
+    trackEvents.downloadResume();
+  };
+
+  const handleProjectClick = (projectName) => {
+    trackEvents.projectClick(projectName);
+  };
+
+  const handleArticleClick = (title) => {
+    trackEvents.articleView(title);
+  };
+
+  const handleSocialClick = (platform) => {
+    trackEvents.externalLink(platform);
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    await handleSubmit(e);
+    if (!state.errors) {
+      trackEvents.formSubmission('contact');
+    }
+  };
+
+  const fadeInUp = {
+    initial: { y: 20, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    transition: { duration: 0.5 }
+  };
+
+  const [heroRef, heroInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1
+  });
+
   return (
-    <main className="min-h-screen bg-white text-gray-800">
-      <header className="bg-gray-100 p-4 shadow">
-        <nav className="flex justify-center space-x-6 text-lg font-medium">
-          <a href="#" className="text-blue-600 hover:underline">Home</a>
-          <a href="#about" className="text-blue-600 hover:underline">About</a>
-          <a href="#projects" className="text-blue-600 hover:underline">Projects</a>
-          <a href="#contact" className="text-blue-600 hover:underline">Contact</a>
-        </nav>
+    <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-800'}`}>
+      {/* Accessible Navigation */}
+      <header className={`fixed w-full z-10 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg transition-colors duration-300`} role="banner">
+        <div className="max-w-7xl mx-auto px-4">
+          <nav className="flex items-center justify-between h-16" role="navigation" aria-label="Main navigation">
+            <div className="flex items-center space-x-8 text-lg font-medium">
+              <a href="#" className="hover:text-blue-500 transition-colors duration-200" aria-label="Home">Home</a>
+              <a href="#about" className="hover:text-blue-500 transition-colors duration-200" aria-label="About me">About</a>
+              <a href="#projects" className="hover:text-blue-500 transition-colors duration-200" aria-label="My projects">Projects</a>
+              <a href="#blog" className="hover:text-blue-500 transition-colors duration-200" aria-label="Blog">Blog</a>
+              <a href="#contact" className="hover:text-blue-500 transition-colors duration-200" aria-label="Contact me">Contact</a>
+            </div>
+            <button
+              onClick={toggleTheme}
+              aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              {darkMode ? '🌙' : '☀️'}
+            </button>
+          </nav>
+        </div>
       </header>
 
-      <section className="flex flex-col items-center justify-center text-center p-8">
-        <h1 className="text-4xl font-bold mb-4">Fati&apos;s Developer Portfolio</h1>
-        <p className="text-lg max-w-xl">
-          Welcome to my personal website! I&apos;m learning software engineering and building cool things along the way.
-        </p>
-      </section>
+      {/* Hero Section with Animation */}
+      <motion.section 
+        ref={heroRef}
+        initial="initial"
+        animate={heroInView ? "animate" : "initial"}
+        variants={fadeInUp}
+        className="pt-24 flex flex-col items-center justify-center text-center p-8"
+      >
+        <div className="max-w-4xl mx-auto">
+          <motion.h1 
+            className="text-5xl font-bold mb-6 font-poppins"
+            variants={fadeInUp}
+          >
+            Fati&apos;s Developer Portfolio
+          </motion.h1>
+          <motion.p 
+            className="text-xl font-inter max-w-2xl mx-auto leading-relaxed"
+            variants={fadeInUp}
+          >
+            Welcome to my personal website! I&apos;m learning software engineering and building cool things along the way.
+          </motion.p>
+          <motion.div className="mt-8" variants={fadeInUp}>
+            <a
+              href="/resume.pdf"
+              onClick={handleResumeClick}
+              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              aria-label="Download Resume"
+            >
+              Download Resume
+            </a>
+          </motion.div>
+        </div>
+      </motion.section>
 
-      <section id="projects" className="bg-white py-12 px-6 text-center">
-        <h2 className="text-3xl font-semibold mb-8">Projects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div className="bg-gray-100 p-6 rounded shadow">
-            <h3 className="text-xl font-bold mb-2">To-Do List App</h3>
-            <p>A simple task manager built with React and Tailwind CSS. Great for staying organized!</p>
-          </div>
-          <div className="bg-gray-100 p-6 rounded shadow">
-            <h3 className="text-xl font-bold mb-2">Weather App</h3>
-            <p>An app that fetches and displays weather data using a public API. Shows current weather by city.</p>
+      {/* Projects Section */}
+      <section id="projects" className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}>
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Projects</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`${darkMode ? 'bg-gray-700' : 'bg-white'} p-8 rounded-xl shadow-lg`}
+            >
+              <h3 className="text-2xl font-bold mb-4">To-Do List App</h3>
+              <p className="text-lg mb-4">A simple task manager built with React and Tailwind CSS. Great for staying organized!</p>
+              <a 
+                href="https://github.com/yourusername/todo-app" 
+                onClick={() => handleProjectClick('Todo List App')}
+                className="text-blue-500 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Todo List App on GitHub"
+              >
+                View on GitHub →
+              </a>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`${darkMode ? 'bg-gray-700' : 'bg-white'} p-8 rounded-xl shadow-lg`}
+            >
+              <h3 className="text-2xl font-bold mb-4">Weather App</h3>
+              <p className="text-lg mb-4">An app that fetches and displays weather data using a public API. Shows current weather by city.</p>
+              <a 
+                href="https://github.com/yourusername/weather-app" 
+                className="text-blue-500 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Weather App on GitHub"
+              >
+                View on GitHub →
+              </a>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section id="about" className="bg-gray-50 py-12 px-6 text-center">
-        <h2 className="text-3xl font-semibold mb-4">About Me</h2>
-        <p className="max-w-2xl mx-auto text-lg">
-          Hi, I&apos;m Fati! I&apos;m learning software engineering step by step, and I love building simple and useful web apps.
-          I&apos;m passionate about solving problems and growing my skills in coding and design.
-        </p>
+      {/* Blog Section */}
+      <section id="blog" className={`py-20 px-6 ${darkMode ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Latest Articles</h2>
+          <div className="space-y-8">
+            <motion.article 
+              whileHover={{ x: 10 }}
+              className="cursor-pointer"
+              onClick={() => handleArticleClick('My Journey into Software Engineering')}
+            >
+              <h3 className="text-2xl font-bold mb-2">My Journey into Software Engineering</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-2">May 24, 2025</p>
+              <p className="text-lg">Exploring my path from beginner to developer, sharing lessons learned along the way.</p>
+            </motion.article>
+            <motion.article 
+              whileHover={{ x: 10 }}
+              className="cursor-pointer"
+            >
+              <h3 className="text-2xl font-bold mb-2">Building with Next.js and Tailwind</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-2">May 20, 2025</p>
+              <p className="text-lg">My experience creating modern web applications with Next.js and Tailwind CSS.</p>
+            </motion.article>
+          </div>
+        </div>
       </section>
 
-      <section id="contact" className="bg-white py-12 px-6 text-center">
-        <h2 className="text-3xl font-semibold mb-4">Contact Me</h2>
-        <form
-          action="https://formspree.io/f/xkgrakjg"
-          method="POST"
-          className="max-w-md mx-auto flex flex-col space-y-4"
-        >
-          <input
-            type="text"
-            name="name"
-            placeholder="Fati"
-            required
-            className="border p-2 rounded"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="lemouarfati1@gmail.com"
-            required
-            className="border p-2 rounded"
-          />
-          <textarea
-            name="message"
-            placeholder="Your Message"
-            required
-            className="border p-2 rounded"
-          ></textarea>
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-          >
-            Send Message
-          </button>
-        </form>
+      {/* About Section */}
+      <section id="about" className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}>
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-8 font-poppins">About Me</h2>
+          <div className="mb-8">
+            <Image
+              src="/profile.jpg"
+              alt="Fati's profile picture"
+              width={150}
+              height={150}
+              className="rounded-full mx-auto mb-6"
+              priority
+            />
+          </div>
+          <p className="text-xl font-inter leading-relaxed mb-6">
+            Hi, I&apos;m Fati! I&apos;m learning software engineering step by step, and I love building simple and useful web apps.
+            I&apos;m passionate about solving problems and growing my skills in coding and design.
+          </p>
+          <div className="flex justify-center space-x-4">
+            <a
+              href="https://github.com/yourusername"
+              onClick={() => handleSocialClick('GitHub')}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit my GitHub profile"
+              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clipRule="evenodd" />
+              </svg>
+            </a>
+            <a
+              href="https://linkedin.com/in/yourusername"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit my LinkedIn profile"
+              className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
       </section>
+
+      {/* Contact Form */}
+      <section id="contact" className={`py-20 px-6 ${darkMode ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Contact Me</h2>
+          <form onSubmit={handleFormSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                className={`w-full px-4 py-3 rounded-lg ${
+                  darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+                } border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200`}
+                aria-label="Your name"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                className={`w-full px-4 py-3 rounded-lg ${
+                  darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+                } border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200`}
+                aria-label="Your email"
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium mb-2">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows="5"
+                className={`w-full px-4 py-3 rounded-lg ${
+                  darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+                } border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200`}
+                aria-label="Your message"
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              disabled={state.submitting}
+              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 disabled:opacity-50"
+              aria-label="Send message"
+            >
+              {state.submitting ? 'Sending...' : 'Send Message'}
+            </button>
+            {state.succeeded && (
+              <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-green-500 text-center"
+              >
+                Thank you for your message! I&apos;ll get back to you soon.
+              </motion.p>
+            )}
+          </form>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className={`py-8 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}>
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            © {new Date().getFullYear()} Fati&apos;s Portfolio. Built with Next.js and Tailwind CSS.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }
