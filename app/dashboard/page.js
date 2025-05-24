@@ -1,4 +1,9 @@
-export default function Dashboard() {
+'use client';
+
+import { Suspense } from 'react';
+import Loading from '../loading';
+
+function DashboardContent() {
   return (
     <div className="space-y-6">
       <section className="mb-8">
@@ -50,5 +55,13 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <DashboardContent />
+    </Suspense>
   );
 }

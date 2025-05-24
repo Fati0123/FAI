@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Suspense } from "react";
+import Loading from '../../loading';
 
 function SettingsContent() {
   const [settings, setSettings] = useState({
@@ -120,9 +121,9 @@ function SettingsContent() {
   );
 }
 
-export default function Settings() {
+export default function SettingsPage() {
   return (
-    <Suspense fallback={<div>Loading settings...</div>}>
+    <Suspense fallback={<Loading />}>
       <SettingsContent />
     </Suspense>
   );

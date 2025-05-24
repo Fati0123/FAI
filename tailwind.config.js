@@ -14,19 +14,16 @@ module.exports = {
         poppins: ['var(--font-poppins)'],
       },
       colors: {
-        background: {
-          DEFAULT: '#ffffff',
-          dark: '#0f172a',
-        },
+        border: 'hsl(var(--border))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
         primary: {
-          light: '#0ea5e9',
-          DEFAULT: '#3b82f6',
-          dark: '#1e40af',
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
-          light: '#8b5cf6',
-          DEFAULT: '#6366f1',
-          dark: '#4338ca',
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
         },
       },
       animation: {
