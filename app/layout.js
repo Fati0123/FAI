@@ -1,10 +1,7 @@
-'use client';
-
 import Script from 'next/script';
 import { Inter, Poppins } from 'next/font/google';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-import { pageview } from '@/lib/analytics';
+import { Providers } from './providers';
+import { Providers as SearchParamsProviders } from './search-params-provider';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -15,6 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://your-portfolio-url.com'),
   title: "Fati's Portfolio | Software Engineer",
   description: "Welcome to my portfolio! I'm Fati, a software engineer passionate about building modern web applications and learning new technologies.",
   keywords: "software engineer, web developer, React, Next.js, portfolio",
@@ -54,15 +52,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (pathname) {
-      pageview(pathname);
-    }
-  }, [pathname, searchParams]);
-
   return (
     <html lang="en" className="scroll-smooth">
       <head>
@@ -82,7 +71,9 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body className={`${inter.variable} ${poppins.variable} font-inter antialiased`}>
-        {children}
+        <SearchParamsProviders>
+          <Providers>{children}</Providers>
+        </SearchParamsProviders>
       </body>
     </html>
   );

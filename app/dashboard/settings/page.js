@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
-export default function Settings() {
+function SettingsContent() {
   const [settings, setSettings] = useState({
     darkMode: false,
     notifications: true,
@@ -117,5 +117,13 @@ export default function Settings() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Settings() {
+  return (
+    <Suspense fallback={<div>Loading settings...</div>}>
+      <SettingsContent />
+    </Suspense>
   );
 }

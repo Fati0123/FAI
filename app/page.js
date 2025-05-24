@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import { loadSlim } from "tsparticles-slim";
 import Particles from "react-tsparticles";
 import { getParticlesConfig } from '@/lib/particlesConfig';
 
-export default function Home() {
+function HomeContent() {
   const [darkMode, setDarkMode] = useState(false);
   const [state, handleSubmit] = useForm("xkgrakjg");
 
@@ -153,13 +153,6 @@ export default function Home() {
           </motion.div>
         </div>
       </motion.section>
-
-      {/* Particles Background */}
-      <Particles 
-        init={particlesInit}
-        options={particlesConfig}
-        className="absolute inset-0 -z-10"
-      />
 
       {/* Projects Section */}
       <section 
@@ -368,5 +361,17 @@ export default function Home() {
         </div>
       </footer>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
