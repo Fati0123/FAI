@@ -98,8 +98,9 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body className="min-h-screen bg-background font-inter relative">
+      <body className="min-h-screen font-inter relative">
         <Providers>
+          <div className="gradient-background" />
           <div className="fixed inset-0 -z-10" id="particles-background" />
           <NavBar />
           <main className="pt-16">
