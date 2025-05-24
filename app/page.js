@@ -1,50 +1,87 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Image from 'next/image';
 import { useForm } from '@formspree/react';
-import { trackEvents } from '@/lib/analytics';
+import { portfolioEvents } from '@/lib/analytics';
+import { loadSlim } from "tsparticles-slim";
+import Particles from "react-tsparticles";
+import { getParticlesConfig } from '@/lib/particlesConfig';
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [state, handleSubmit] = useForm("xkgrakjg");
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    setDarkMode(savedTheme === 'dark');
+  const particlesInit = useCallback(async engine => {
+    await loadSlim(engine);
   }, []);
 
+  // Track initial page load
+  useEffect(() => {
+    portfolioEvents.navigation('home');
+  }, []);
+
+  // Theme tracking
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const initialTheme = savedTheme === 'dark';
+    setDarkMode(initialTheme);
+    portfolioEvents.themeSwitch(initialTheme ? 'dark' : 'light');
+  }, []);
+
+  // Section visibility tracking
+  const [heroRef, heroInView] = useInView({ threshold: 0.1 });
+  const [projectsRef, projectsInView] = useInView({ threshold: 0.1 });
+  const [aboutRef, aboutInView] = useInView({ threshold: 0.1 });
+  const [contactRef, contactInView] = useInView({ threshold: 0.1 });
+
+  useEffect(() => {
+    if (heroInView) portfolioEvents.sectionView('hero');
+  }, [heroInView]);
+
+  useEffect(() => {
+    if (projectsInView) portfolioEvents.sectionView('projects');
+  }, [projectsInView]);
+
+  useEffect(() => {
+    if (aboutInView) portfolioEvents.sectionView('about');
+  }, [aboutInView]);
+
+  useEffect(() => {
+    if (contactInView) portfolioEvents.sectionView('contact');
+  }, [contactInView]);
+
+  // Event handlers
   const toggleTheme = () => {
     const newTheme = !darkMode;
     setDarkMode(newTheme);
     localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-    trackEvents.themeToggle(newTheme ? 'dark' : 'light');
+    portfolioEvents.themeSwitch(newTheme ? 'dark' : 'light');
   };
 
   const handleResumeClick = () => {
-    trackEvents.downloadResume();
+    portfolioEvents.resumeDownload();
   };
 
-  const handleProjectClick = (projectName) => {
-    trackEvents.projectClick(projectName);
-  };
-
-  const handleArticleClick = (title) => {
-    trackEvents.articleView(title);
+  const handleProjectClick = (projectName, link) => {
+    portfolioEvents.projectClick(projectName, link);
   };
 
   const handleSocialClick = (platform) => {
-    trackEvents.externalLink(platform);
+    portfolioEvents.socialClick(platform);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     await handleSubmit(e);
-    if (!state.errors) {
-      trackEvents.formSubmission('contact');
-    }
+    portfolioEvents.formSubmit(!state.errors);
+  };
+
+  // Track form interactions
+  const handleFormFocus = () => {
+    portfolioEvents.formStart();
   };
 
   const fadeInUp = {
@@ -52,11 +89,6 @@ export default function Home() {
     animate: { y: 0, opacity: 1 },
     transition: { duration: 0.5 }
   };
-
-  const [heroRef, heroInView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1
-  });
 
   return (
     <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-800'}`}>
@@ -88,9 +120,15 @@ export default function Home() {
         initial="initial"
         animate={heroInView ? "animate" : "initial"}
         variants={fadeInUp}
-        className="pt-24 flex flex-col items-center justify-center text-center p-8"
+        className="pt-24 flex flex-col items-center justify-center text-center p-8 relative min-h-screen"
       >
-        <div className="max-w-4xl mx-auto">
+        <Particles
+          id="tsparticles"
+          init={particlesInit}
+          options={getParticlesConfig(darkMode)}
+          className="absolute inset-0 -z-10"
+        />
+        <div className="max-w-4xl mx-auto relative z-10">
           <motion.h1 
             className="text-5xl font-bold mb-6 font-poppins"
             variants={fadeInUp}
@@ -116,8 +154,19 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* Particles Background */}
+      <Particles 
+        init={particlesInit}
+        options={particlesConfig}
+        className="absolute inset-0 -z-10"
+      />
+
       {/* Projects Section */}
-      <section id="projects" className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}>
+      <section 
+        ref={projectsRef}
+        id="projects" 
+        className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}
+      >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -129,8 +178,8 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-4">To-Do List App</h3>
               <p className="text-lg mb-4">A simple task manager built with React and Tailwind CSS. Great for staying organized!</p>
               <a 
-                href="https://github.com/yourusername/todo-app" 
-                onClick={() => handleProjectClick('Todo List App')}
+                href="https://github.com/Fati0123/fati" 
+                onClick={() => handleProjectClick('Todo List App', 'GitHub')}
                 className="text-blue-500 hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -147,7 +196,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-4">Weather App</h3>
               <p className="text-lg mb-4">An app that fetches and displays weather data using a public API. Shows current weather by city.</p>
               <a 
-                href="https://github.com/yourusername/weather-app" 
+                href="https://github.com/Fati0123/fati" 
                 className="text-blue-500 hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -187,7 +236,11 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}>
+      <section 
+        ref={aboutRef}
+        id="about" 
+        className={`py-20 px-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} transition-colors duration-300`}
+      >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8 font-poppins">About Me</h2>
           <div className="mb-8">
@@ -206,7 +259,7 @@ export default function Home() {
           </p>
           <div className="flex justify-center space-x-4">
             <a
-              href="https://github.com/yourusername"
+              href="https://github.com/Fati0123/fati"
               onClick={() => handleSocialClick('GitHub')}
               target="_blank"
               rel="noopener noreferrer"
@@ -218,7 +271,8 @@ export default function Home() {
               </svg>
             </a>
             <a
-              href="https://linkedin.com/in/yourusername"
+              href="https://www.linkedin.com/in/fati-lmn-849a06339/"
+              onClick={() => handleSocialClick('LinkedIn')}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit my LinkedIn profile"
@@ -233,10 +287,18 @@ export default function Home() {
       </section>
 
       {/* Contact Form */}
-      <section id="contact" className={`py-20 px-6 ${darkMode ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+      <section 
+        ref={contactRef}
+        id="contact" 
+        className={`py-20 px-6 ${darkMode ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}
+      >
         <div className="max-w-2xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center font-poppins">Contact Me</h2>
-          <form onSubmit={handleFormSubmit} className="space-y-6">
+          <form 
+            onSubmit={handleFormSubmit} 
+            onFocus={handleFormFocus}
+            className="space-y-6"
+          >
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
               <input
