@@ -100,22 +100,28 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body className="min-h-screen font-inter relative">
-        <Providers>
-          <div className="gradient-background" />
-          <div className="fixed inset-0 -z-10" id="particles-background" />
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">{/* Wrap content */}
-            <NavBar />
-            <main className="pt-16">
-              {children}
-            </main>
-            <footer className="mt-auto py-8 text-center text-sm text-foreground/70">
-              <div className="container">
-                <SocialIcons />
-                <p>© {new Date().getFullYear()} Fati. All rights reserved.</p>
+        <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 relative overflow-hidden">
+          {/* AI Texture Overlay */}
+          <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTAwMCAxMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMwMDAiLz48ZyBvcGFjaXR5PSIwLjEiPjxwYXRoIGQ9Ik0wIDBoMTAwdjEwMEgwVjB6TTEwMCAxMDBoMTAwdjEwMEgxMDBWMTAwek0wIDEwMGgxMDB2MTAwSDBWMTAwek0xMDAgMjAwaDEwMHYxMDBIMTAwVjIwMHpNMCAyMDBoMTAwdjEwMEgwVjIwMHpNMTAwIDMwMGgxMDB2MTAwSDEwMFYzMDB6TTAgMzAwaDEwMHYxMDBIMFYzMDB6TTEwMCA0MDBoMTAwdjEwMEgxMDBWNDAwek0wIDQwMGgxMDB2MTAwSDBWNDAwek0xMDAgNTAwaDEwMHYxMDBIMTAwVjUwMHpNMCA1MDBoMTAwdjEwMEgwVjUwMHpNMTAwIDYwMGgxMDB2MTAwSDEwMFY2MDB6TTAgNjAwaDEwMHYxMDBIMFY2MDB6TTEwMCA3MDBoMTAwdjEwMEgxMDBWNzAwek0wIDcwMGgxMDB2MTAwSDBWNzAwek0xMDAgODAwaDEwMHYxMDBIMTAwVjgwMHpNMCA4MDBoMTAwdjEwMEgwVjgwMHpNMTAwIDkwMGgxMDB2MTAwSDEwMFY5MDB6TTAgOTAwaDEwMHYxMDBIMFY5MDB6IiBmaWxsPSIjZmZmIi8+PC9nPjwvc3ZnPg==')]"></div>
+
+          {/* Content container */}
+          <div className="relative z-10">
+            <Providers>
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">{/* Wrap content */}
+                <NavBar />
+                <main className="pt-16">
+                  {children}
+                </main>
+                <footer className="mt-auto py-8 text-center text-sm text-foreground/70">
+                  <div className="container">
+                    <SocialIcons />
+                    <p>© {new Date().getFullYear()} Fati. All rights reserved.</p>
+                  </div>
+                </footer>
               </div>
-            </footer>
+            </Providers>
           </div>
-        </Providers>
+        </div>
       </body>
     </html>
   );
