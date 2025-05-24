@@ -91,9 +91,17 @@ function HomeContent() {
   };
 
   return (
-    <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-800'}`}>
+    <main className="min-h-screen relative">
+      <div className={`absolute inset-0 transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-800'}`}>
+        <Particles
+          id="tsparticles"
+          init={particlesInit}
+          options={getParticlesConfig(darkMode)}
+          className="absolute inset-0 w-full h-full"
+        />
+      </div>
       {/* Accessible Navigation */}
-      <header className={`fixed w-full z-10 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg transition-colors duration-300`} role="banner">
+      <header className={`fixed w-full z-10 ${darkMode ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm shadow-lg transition-colors duration-300`} role="banner">
         <div className="max-w-7xl mx-auto px-4">
           <nav className="flex items-center justify-between h-16" role="navigation" aria-label="Main navigation">
             <div className="flex items-center space-x-8 text-lg font-medium">
@@ -122,12 +130,6 @@ function HomeContent() {
         variants={fadeInUp}
         className="pt-24 flex flex-col items-center justify-center text-center p-8 relative min-h-screen"
       >
-        <Particles
-          id="tsparticles"
-          init={particlesInit}
-          options={getParticlesConfig(darkMode)}
-          className="absolute inset-0 -z-10"
-        />
         <div className="max-w-4xl mx-auto relative z-10">
           <motion.h1 
             className="text-5xl font-bold mb-6 font-poppins"
@@ -236,15 +238,21 @@ function HomeContent() {
       >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8 font-poppins">About Me</h2>
-          <div className="mb-8">
-            <Image
-              src="/profile.jpg"
-              alt="Fati's profile picture"
-              width={150}
-              height={150}
-              className="rounded-full mx-auto mb-6"
-              priority
-            />
+          <div className="mb-8 relative">
+            <div className="w-[150px] h-[150px] mx-auto mb-6 relative overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
+              <Image
+                src="/profile.jpg"
+                alt="Fati's profile picture"
+                width={150}
+                height={150}
+                className="rounded-full object-cover"
+                priority
+                quality={90}
+                onError={(e) => {
+                  e.target.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+                }}
+              />
+            </div>
           </div>
           <p className="text-xl font-inter leading-relaxed mb-6">
             Hi, I&apos;m Fati! I&apos;m learning software engineering step by step, and I love building simple and useful web apps.
