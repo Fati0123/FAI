@@ -4,6 +4,15 @@ import reactHooks from 'eslint-plugin-react-hooks'
 
 export default [
   {
+    languageOptions: {
+      sourceType: 'module',
+      ecmaVersion: 2022,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
+    },
     plugins: {
       react,
       '@next/next': nextJs,

@@ -4,6 +4,7 @@ import './globals.css';
 import { Providers } from './providers';
 import NavBar from '../components/NavBar';
 import SocialIcons from '../components/SocialIcons';
+import { Suspense } from 'react';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -107,10 +108,12 @@ export default function RootLayout({ children }) {
           {/* Content container */}
           <div className="relative z-10">
             <Providers>
-              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">{/* Wrap content */}
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <NavBar />
                 <main className="pt-16">
-                  {children}
+                  <Suspense fallback={<div>Loading...</div>}>
+                    {children}
+                  </Suspense>
                 </main>
                 <footer className="mt-auto py-8 text-center text-sm text-foreground/70">
                   <div className="container">

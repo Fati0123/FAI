@@ -2,7 +2,6 @@
 
 import { Inter, Poppins } from 'next/font/google';
 import { Providers } from './providers';
-import { Providers as SearchParamsProviders } from './search-params-provider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const poppins = Poppins({
@@ -13,12 +12,10 @@ const poppins = Poppins({
 
 export default function Template({ children }) {
   return (
-    <SearchParamsProviders>
-      <Providers>
-        <div className={`${inter.variable} ${poppins.variable} font-inter antialiased min-h-screen bg-white dark:bg-gray-900`}>
-          {children}
-        </div>
-      </Providers>
-    </SearchParamsProviders>
+    <Providers>
+      <div className={`${inter.variable} ${poppins.variable} font-inter antialiased min-h-screen bg-white dark:bg-gray-900`}>
+        {children}
+      </div>
+    </Providers>
   );
 }
